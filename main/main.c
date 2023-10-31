@@ -41,14 +41,31 @@ static void lv_tick_task(void *arg) {
     lv_tick_inc(LV_TICK_PERIOD_MS);
 }
 
-void button(void) {
-    lv_obj_t * btn = lv_btn_create(lv_scr_act());           /*Add a button the current screen*/
-    lv_obj_set_pos(btn, 10, 10);                            /*Set its position*/
-    lv_obj_set_size(btn, 120, 50);                          /*Set its size*/
+static void event_cb(lv_event_t * e) {
+    // inisialisasi event
+    lv_event_code_t code = lv_event_get_code(e);
 
-    lv_obj_t * label = lv_label_create(btn);                /*Add a label to the button*/
-    lv_label_set_text(label, "Button");                     /*Set the labels text*/
+    // inisialisasi label
+    lv_obj_t * label = lv_label_create(lv_scr_act());
+
+    // membuat suatu text label baru ketika button di tekan
+    lv_label_set_text(label, "Tombol telah diklik");
     lv_obj_center(label);
+}
+
+void button(void) {
+    // inisialisasi button
+    lv_obj_t * btn = lv_btn_create(lv_scr_act());           
+    lv_obj_center(btn);                             // buat posisi button berada di tengah                       
+    lv_obj_set_size(btn, 120, 50);                  // mengatur ukuran button                 
+
+    // inisialisasi text (label) dalam button
+    lv_obj_t * label = lv_label_create(btn);                
+    lv_label_set_text(label, "Tekan disini!");                
+    lv_obj_center(label);
+
+    // memberi event (click) pada button 
+    lv_obj_add_event_cb(btn, event_cb, LV_EVENT_CLICKED, NULL);
 }
 
 static void guiTask(void *pvParameter) {
@@ -114,7 +131,8 @@ static void guiTask(void *pvParameter) {
 
 
     /* YOUR LVGL DISPLAY FUNCTION HERE*/ 
-    button();
+
+    button();           // panggil fungsi yang telah dibuat
 
     while (1) {
         /* Delay 1 tick (assumes FreeRTOS tick is 10ms */
